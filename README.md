@@ -137,9 +137,9 @@ Compile process models & generate code:
 
 ```Bash
 mvn clean compile
-Run the application locally:
 ```
 
+Run the application locally:
 ```Bash
 mvn spring-boot:run
 ```
@@ -149,4 +149,78 @@ Kogito auto-generates REST endpoints based on your process ID.
 
 Process ID: my_process
 
-Endpoint: POST http://localhost:8080/my_process
+## Endpoints: 
+### Create auto approval process: 
+```
+POST http://localhost:8080/my_process
+Body (JSON):
+{
+  "amount": 5000
+}
+```
+response: 
+```
+{
+    "id": "d2ba889c-2d17-4b1c-a046-8736331741e4",
+    "amount": 5000.0,
+    "approved": true
+}
+```
+
+### Start the Process (Triggers Manager Flow):
+```
+POST http://localhost:8080/my_process
+Body (JSON):
+{
+  "amount": 15000
+}
+```
+response: 
+```
+{
+    "id": "d599d16e-ba7b-44b9-bf31-87586533a024",
+    "amount": 15000.0,
+    "approved": null
+}
+```
+
+### Get the Pending User Task ID
+```
+GET http://localhost:8080/my_process/d599d16e-ba7b-44b9-bf31-87586533a024/tasks?user=manager1&group=managers
+```
+response: 
+```
+[
+    {
+        "id": "c5595e45-aa28-40d1-a54b-fef3c4a5aa52",
+        "name": "ManagerReviewTask",
+        "state": 0,
+        "phase": "active",
+        "phaseStatus": "Ready",
+        "parameters": {
+            "in_amount": 15000.0
+        },
+        "results": {
+            "out_approved": null
+        }
+    }
+]
+```
+
+### Complete the Task (Approve or Reject): 
+```
+POST http://localhost:8080/my_process/d599d16e-ba7b-44b9-bf31-87586533a024/ManagerReviewTask/c5595e45-aa28-40d1-a54b-fef3c4a5aa52?user=manager1&group=managers
+
+Body (JSON):
+{
+  "out_approved": true
+}
+```
+response: 
+```
+{
+    "id": "d599d16e-ba7b-44b9-bf31-87586533a024",
+    "amount": 15000.0,
+    "approved": true
+}
+```
