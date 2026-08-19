@@ -87,6 +87,11 @@
                 <artifactId>kogito-maven-plugin</artifactId>
                 <version>${kogito.version}</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <flags>
+                        <rest>false</rest>
+                    </flags>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
